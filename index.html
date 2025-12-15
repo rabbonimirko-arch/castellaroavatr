@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
   <title>Digital Screen Italia · AI Assistant</title>
 
   <style>
@@ -24,7 +24,6 @@
       color: #e6faff;
       font-size: 1rem;
       font-weight: 600;
-      text-transform: uppercase;
       letter-spacing: 1px;
       border-bottom: 1px solid rgba(0,180,255,0.4);
       z-index: 10;
@@ -33,10 +32,9 @@
       left: 0;
     }
 
-    /* AREA SOTTO L’HEADER (FULL SCREEN AVATAR) */
     #fullscreen-wrapper {
       position: fixed;
-      top: 50px; /* spazio per header */
+      top: 50px;
       left: 0;
       right: 0;
       bottom: 0;
@@ -46,11 +44,12 @@
       z-index: 1;
     }
 
-    /* OVERRIDE del widget HeyGen → trasformato in FULL SCREEN sotto l’header */
-    #heygen-streaming-embed {
+    /* 🔹 Avatar sempre fullscreen */
+    #heygen-streaming-embed,
+    #heygen-streaming-embed.expand,
+    #heygen-streaming-embed.show {
       position: absolute !important;
-      left: 0 !important;
-      top: 0 !important;
+      inset: 0 !important;
       width: 100% !important;
       height: 100% !important;
       border-radius: 0 !important;
@@ -59,13 +58,10 @@
       opacity: 1 !important;
       visibility: visible !important;
       transform: none !important;
+      z-index: 5 !important;
     }
 
-    #heygen-streaming-container {
-      width: 100% !important;
-      height: 100% !important;
-    }
-
+    #heygen-streaming-container,
     #heygen-streaming-container iframe {
       width: 100% !important;
       height: 100% !important;
@@ -76,95 +72,38 @@
 </head>
 
 <body>
-
   <header>DIGITAL SCREEN ITALIA · AI ASSISTANT</header>
-
   <div id="fullscreen-wrapper"></div>
 
-  <!-- 🔽 NUOVO SCRIPT HEYGEN: GRAHAM_BLACK_SHIRT_PUBLIC -->
+  <!-- 🔽 EMBED HEYGEN (Graham Black Shirt) -->
   <script>
     !function(window){
       const host = "https://labs.heygen.com",
         url = host + "/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiJHcmFoYW1fQmxhY2tfU2hpcnRfcHVibGlj%0D%0AIiwicHJldmlld0ltZyI6Imh0dHBzOi8vZmlsZXMyLmhleWdlbi5haS9hdmF0YXIvdjMvMWJkMDE2%0D%0AMmNlOTg1NDE1MDkyZWQxZjAwM2FhOTA2NDZfNTUzNTAvcHJldmlld190YXJnZXQud2VicCIsIm5l%0D%0AZWRSZW1vdmVCYWNrZ3JvdW5kIjp0cnVlLCJrbm93bGVkZ2VCYXNlSWQiOiI1ZmI3ZmNjOWQ2NTY0%0D%0AYzA4ODBhOWZhNWFlZTA1YjhlMCIsInVzZXJuYW1lIjoiZmI0MGNkYjU2N2VmNGMxODkwMzg0OTA4%0D%0AMjljMjBlNmYifQ%3D%3D&inIFrame=1",
-        clientWidth = document.body.clientWidth,
         wrapDiv = document.createElement("div");
-
       wrapDiv.id = "heygen-streaming-embed";
 
       const container = document.createElement("div");
       container.id = "heygen-streaming-container";
 
-      const stylesheet = document.createElement("style");
-      stylesheet.innerHTML = `
-  #heygen-streaming-embed {
-    z-index: 9999;
-    position: fixed;
-    left: 40px;
-    bottom: 40px;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.12);
-    transition: all linear 0.1s;
-    overflow: hidden;
-
-    opacity: 0;
-    visibility: hidden;
-  }
-  #heygen-streaming-embed.show {
-    opacity: 1;
-    visibility: visible;
-  }
-  #heygen-streaming-embed.expand {
-    ${clientWidth < 540
-      ? "height: 266px; width: 96%; left: 50%; transform: translateX(-50%);"
-      : "height: 366px; width: calc(366px * 16 / 9);"}
-    border: 0;
-    border-radius: 8px;
-  }
-  #heygen-streaming-container {
-    width: 100%;
-    height: 100%;
-  }
-  #heygen-streaming-container iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
-      `;
-
       const iframe = document.createElement("iframe");
-      iframe.allowFullscreen = !1;
+      iframe.allowFullscreen = false;
       iframe.title = "Streaming Embed";
       iframe.role = "dialog";
       iframe.allow = "microphone";
       iframe.src = url;
 
-      let visible = !1,
-          initial = !1;
-
-      window.addEventListener("message", (e => {
-        e.origin === host &&
-        e.data &&
-        e.data.type &&
-        "streaming-embed" === e.data.type &&
-        (
-          "init" === e.data.action
-            ? (initial = !0, wrapDiv.classList.toggle("show", initial))
-            : "show" === e.data.action
-              ? (visible = !0, wrapDiv.classList.toggle("expand", visible))
-              : "hide" === e.data.action &&
-                (visible = !1, wrapDiv.classList.toggle("expand", visible))
-        )
-      }));
-
       container.appendChild(iframe);
-      wrapDiv.appendChild(stylesheet);
       wrapDiv.appendChild(container);
-      document.body.appendChild(wrapDiv);
+      document.getElementById("fullscreen-wrapper").appendChild(wrapDiv);
+
+      // Forza subito modalità espansa
+      window.addEventListener("message", (e) => {
+        if (e.origin === host && e.data?.type === "streaming-embed") {
+          wrapDiv.classList.add("expand", "show");
+        }
+      });
     }(globalThis);
   </script>
-
 </body>
 </html>
