@@ -1,69 +1,174 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Avatar AI · Fullscreen Mobile</title>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-    />
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background: #000;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          Roboto, sans-serif;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Screen Italia · AI Assistant</title>
 
-      /* Contenitore full screen 9:16 */
-      .avatar-wrapper {
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      font-family: system-ui, Arial;
+    }
 
-      .avatar-frame {
-        width: 100%;
-        height: 100%;
-        border: 0;
-        /* Forza adattamento al display verticale */
-        display: block;
-      }
+    header {
+      width: 100%;
+      padding: 14px 0;
+      text-align: center;
+      background: linear-gradient(90deg, #02131e, #033049, #02131e);
+      color: #e6faff;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid rgba(0,180,255,0.4);
+      z-index: 10;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
 
-      .hint-mobile {
-        position: fixed;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 6px 10px;
-        font-size: 0.75rem;
-        color: #fff;
-        background: rgba(0, 0, 0, 0.45);
-        border-radius: 12px;
-        z-index: 10;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="avatar-wrapper">
-      <iframe
-        class="avatar-frame"
-        title="HeyGen Streaming Avatar"
-        allow="microphone"
-        src="https://labs.heygen.com/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiJHcmFoYW1fQmxhY2tfU2hpcnRfcHVibGlj%0D%0AIiwicHJldmlld0ltZyI6Imh0dHBzOi8vZmlsZXMyLmhleWdlbi5haS9hdmF0YXIvdjMvMWJkMDE2%0D%0AMmNlOTg1NDE1MDkyZWQxZjAwM2FhOTA2NDZfNTUzNTAvcHJldmlld190YXJnZXQud2VicCIsIm5l%0D%0AZWRSZW1vdmVCYWNrZ3JvdW5kIjp0cnVlLCJrbm93bGVkZ2VCYXNlSWQiOiI1ZmI3ZmNjOWQ2NTY0%0D%0AYzA4ODBhOWZhNWFlZTA1YjhlMCIsInVzZXJuYW1lIjoiZmI0MGNkYjU2N2VmNGMxODkwMzg0OTA4%0D%0AMjljMjBlNmYifQ%3D%3D&inIFrame=1"
-      ></iframe>
-    </div>
+    /* CONTAINER FULL SCREEN SOTTO L’HEADER */
+    #fullscreen-wrapper {
+      position: fixed;
+      top: 50px; /* spazio per header */
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: calc(100% - 50px);
+      overflow: hidden;
+      z-index: 1;
+    }
 
-    <div class="hint-mobile">
-      Tocca l’avatar e consenti il microfono per iniziare a parlare
-    </div>
-  </body>
+    /* OVERRIDE del widget HeyGen → trasformato in FULL SCREEN */
+    #heygen-streaming-embed {
+      position: absolute !important;
+      left: 0 !important;
+      top: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: none !important;
+    }
+
+    #heygen-streaming-container {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    #heygen-streaming-container iframe {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      border: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>DIGITAL SCREEN ITALIA · AI ASSISTANT</header>
+
+  <div id="fullscreen-wrapper"></div>
+
+  <!-- SCRIPT HEYGEN CON NUOVO AVATAR (GRAHAM BLACK SHIRT) -->
+  <script>
+!function(window){
+  const host = "https://labs.heygen.com",
+    url = host + "/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiJHcmFoYW1fQmxhY2tfU2hpcnRfcHVibGlj%0D%0AIiwicHJldmlld0ltZyI6Imh0dHBzOi8vZmlsZXMyLmhleWdlbi5haS9hdmF0YXIvdjMvMWJkMDE2%0D%0AMmNlOTg1NDE1MDkyZWQxZjAwM2FhOTA2NDZfNTUzNTAvcHJldmlld190YXJnZXQud2VicCIsIm5l%0D%0AZWRSZW1vdmVCYWNrZ3JvdW5kIjp0cnVlLCJrbm93bGVkZ2VCYXNlSWQiOiI1ZmI3ZmNjOWQ2NTY0%0D%0AYzA4ODBhOWZhNWFlZTA1YjhlMCIsInVzZXJuYW1lIjoiZmI0MGNkYjU2N2VmNGMxODkwMzg0OTA4%0D%0AMjljMjBlNmYifQ%3D%3D&inIFrame=1",
+    clientWidth = document.body.clientWidth,
+    wrapDiv = document.createElement("div");
+
+  wrapDiv.id = "heygen-streaming-embed";
+
+  const container = document.createElement("div");
+  container.id = "heygen-streaming-container";
+
+  const stylesheet = document.createElement("style");
+  stylesheet.innerHTML = `
+  #heygen-streaming-embed {
+    z-index: 9999;
+    position: fixed;
+    left: 40px;
+    bottom: 40px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.12);
+    transition: all linear 0.1s;
+    overflow: hidden;
+
+    opacity: 0;
+    visibility: hidden;
+  }
+  #heygen-streaming-embed.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  #heygen-streaming-embed.expand {
+    ${clientWidth < 540
+      ? "height: 266px; width: 96%; left: 50%; transform: translateX(-50%);"
+      : "height: 366px; width: calc(366px * 16 / 9);"}
+    border: 0;
+    border-radius: 8px;
+  }
+  #heygen-streaming-container {
+    width: 100%;
+    height: 100%;
+  }
+  #heygen-streaming-container iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  `;
+
+  const iframe = document.createElement("iframe");
+  iframe.allowFullscreen = !1;
+  iframe.title = "Streaming Embed";
+  iframe.role = "dialog";
+  iframe.allow = "microphone";
+  iframe.src = url;
+
+  let visible = !1,
+      initial = !1;
+
+  window.addEventListener("message", (e => {
+    if (
+      e.origin === host &&
+      e.data &&
+      e.data.type === "streaming-embed"
+    ) {
+      if (e.data.action === "init") {
+        initial = !0;
+        wrapDiv.classList.toggle("show", initial);
+      } else if (e.data.action === "show") {
+        visible = !0;
+        wrapDiv.classList.toggle("expand", visible);
+      } else if (e.data.action === "hide") {
+        visible = !1;
+        wrapDiv.classList.toggle("expand", visible);
+      }
+    }
+  }));
+
+  container.appendChild(iframe);
+  wrapDiv.appendChild(stylesheet);
+  wrapDiv.appendChild(container);
+  document.body.appendChild(wrapDiv);
+}(globalThis);
+  </script>
+
+</body>
 </html>
