@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Richard Guigobono - Avatar Interattivo</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* contenitore principale per rapporto 9:16 */
+    #avatar-wrapper {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      max-height: 100vh;
+      aspect-ratio: 9 / 16;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="avatar-wrapper"></div>
+
+  <script>
+    !function(window){
+      const host="https://labs.heygen.com",
+      url=host+"/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiJHcmFoYW1fQmxhY2tfU2hpcnRfcHVibGlj%0D%0AIiwicHJldmlld0ltZyI6Imh0dHBzOi8vZmlsZXMyLmhleWdlbi5haS9hdmF0YXIvdjMvMWJkMDE2%0D%0AMmNlOTg1NDE1MDkyZWQxZjAwM2FhOTA2NDZfNTUzNTAvcHJldmlld190YXJnZXQud2VicCIsIm5l%0D%0AZWRSZW1vdmVCYWNrZ3JvdW5kIjp0cnVlLCJrbm93bGVkZ2VCYXNlSWQiOiI1ZmI3ZmNjOWQ2NTY0%0D%0AYzA4ODBhOWZhNWFlZTA1YjhlMCIsInVzZXJuYW1lIjoiZmI0MGNkYjU2N2VmNGMxODkwMzg0OTA4%0D%0AMjljMjBlNmYifQ%3D%3D&inIFrame=1";
+
+      const wrapDiv=document.createElement("div");
+      wrapDiv.id="heygen-streaming-embed";
+
+      const container=document.createElement("div");
+      container.id="heygen-streaming-container";
+
+      const stylesheet=document.createElement("style");
+      stylesheet.innerHTML=`
+        #heygen-streaming-embed {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          z-index: 9999;
+          border: none;
+          overflow: hidden;
+          background-color: black;
+        }
+        #heygen-streaming-container {
+          width: 100%;
+          height: 100%;
+        }
+        #heygen-streaming-container iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+      `;
+
+      const iframe=document.createElement("iframe");
+      iframe.allow="microphone; autoplay";
+      iframe.src=url;
+      iframe.title="HeyGen Avatar";
+      iframe.setAttribute("allowfullscreen", false);
+
+      container.appendChild(iframe);
+      wrapDiv.appendChild(stylesheet);
+      wrapDiv.appendChild(container);
+      document.getElementById("avatar-wrapper").appendChild(wrapDiv);
+    }(globalThis);
+  </script>
+</body>
+</html>
